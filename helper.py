@@ -1,4 +1,21 @@
+import openai
 from statistics import mean
+
+def query_gpt3_5_turbo(prompt, max_tokens=1000, language="english"):
+    system_message = {
+        "english": "You are a helpful assistant.",
+        "spanish": "Eres un asistente útil.",
+        "mandarin": "你是一个有用的助手。",
+    }
+
+    response = openai.ChatCompletion.create(
+        model="gpt-3.5-turbo",
+        messages=[{"role": "system", "content": system_message[language]},
+                  {"role": "user", "content": prompt}],
+        max_tokens=max_tokens
+    )
+
+    return response.choices[0].message['content']
 
 def score_mfq(responses):
     harm = [responses[0], responses[6], responses[21], responses[16], responses[27]]
