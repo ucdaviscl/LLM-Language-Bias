@@ -17,7 +17,7 @@ def query_gpt3_5_turbo(prompt, max_tokens=1000, language="english"):
 
     return response.choices[0].message['content']
 
-def score_mfq(responses):
+def score_mfq(responses, response_type="dict"):
     harm = [responses[0], responses[6], responses[21], responses[16], responses[27]]
     fairness = [responses[1], responses[7], responses[12], responses[23], responses[17], responses[28]]
     ingroup = [responses[2], responses[8], responses[13], responses[22], responses[18], responses[29]]
@@ -32,11 +32,16 @@ def score_mfq(responses):
 
     overall_avg = mean([harm_avg, fairness_avg, ingroup_avg, authority_avg, purity_avg])
     
-    return {
-        'Harm': harm_avg,
-        'Fairness': fairness_avg,
-        'Ingroup': ingroup_avg,
-        'Authority': authority_avg,
-        'Purity': purity_avg,
-        'Overall': overall_avg
-    }
+    if response_type == "dict":
+        return {
+            'Harm': harm_avg,
+            'Fairness': fairness_avg,
+            'Ingroup': ingroup_avg,
+            'Authority': authority_avg,
+            'Purity': purity_avg,
+            'Overall': overall_avg
+        }
+    elif response_type == "list":
+        return [harm_avg, fairness_avg, ingroup_avg, authority_avg, purity_avg, overall_avg]
+    else:
+        return "Invalid response type. Please use 'dict' or 'list'."
